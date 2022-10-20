@@ -7,11 +7,11 @@ function App() {
 
   return (
     <div className="App">
-      <Carousel>
+      <Carousel cardWidth={200} visibleCount={4} gap={12} >
         {
           products &&
           products?.map((product, index) => (
-            <CarouselItem product={product} key={index}/>
+            <CarouselItem product={product} key={index} />
           ))
         }
       </Carousel>

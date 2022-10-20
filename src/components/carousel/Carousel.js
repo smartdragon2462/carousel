@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, ArrowRight } from '../../assets/images';
 
-const cardWidth = 200;
-const gap = 12;
-
-export const CarouselItem = ({ product, children, width }) => {
+export const CarouselItem = ({ product, children, width, gap=12 }) => {
     const { img, name, price } = product;
 
     const style = {
         carouselItem: {
             color: '#333',
             fontFamily: "Arial",
-            width: { width },
             textAlign: 'left',
-            marginRight: '12px'
+            marginRight: `${gap}px`
         },
         img: {
-            width: `${cardWidth}px`,
+            width: width,
             height: 'auto'
         },
         name: {
@@ -37,30 +33,31 @@ export const CarouselItem = ({ product, children, width }) => {
     );
 };
 
-const Carousel = ({ children }) => {
+const Carousel = (props) => {
+    const { children, cardWidth = 200, visibleCount = 4, gap = 12 } = props;
     const [activeIndex, setActicveIndex] = useState(0);
     const itemCount = React.Children.count(children);
 
     const style = {
         container: {
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            position: 'relative', 
-            width: `${(cardWidth + gap) * 4 + 100}px`,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+            width: `${(cardWidth + gap) * visibleCount + 100}px`,
             margin: 'auto'
         },
         arrows: {
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center', 
-            position: 'absolute', 
-            top: 0, 
-            width: '100%', 
-            height: '100%' 
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'absolute',
+            top: 0,
+            width: '100%',
+            height: '100%'
         },
         carousel: {
-            width: `${(cardWidth + gap) * 4}px`,
+            width: `${(cardWidth + gap) * visibleCount}px`,
             position: 'relative',
             overflow: 'hidden'
         },
@@ -70,15 +67,15 @@ const Carousel = ({ children }) => {
             transition: 'transform 0.3s',
             transform: `translateX(-${activeIndex * (cardWidth + gap)}px)`
         },
-        arrowBtn: {         
+        arrowBtn: {
             width: "25px",
             padding: '12px',
         }
     };
 
     const updateIndex = (newIndex) => {
-        if (newIndex < 0) newIndex = itemCount - 4;
-        else if (newIndex >= itemCount - 3) newIndex = 0;
+        if (newIndex < 0) newIndex = itemCount - visibleCount;
+        else if (newIndex > itemCount - visibleCount) newIndex = 0;
         setActicveIndex(newIndex);
     }
 
@@ -99,7 +96,7 @@ const Carousel = ({ children }) => {
             <div className='carousel' style={style.carousel} >
                 <div className='inner' style={style.inner} >
                     {React.Children.map(children, (child, index) => {
-                        return React.cloneElement(child, { width: `${cardWidth}px` });
+                        return React.cloneElement(child, { width: `${cardWidth}px`, gap:gap });
                     })}
                 </div>
             </div>
@@ -115,7 +112,7 @@ const Carousel = ({ children }) => {
                     style={style.arrowBtn}
                     src={ArrowRight}
                     onClick={() => updateIndex(activeIndex + 1)}
-                /> 
+                />
             </div>
         </div>
     )
